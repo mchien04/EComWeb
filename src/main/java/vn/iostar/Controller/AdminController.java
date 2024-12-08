@@ -27,6 +27,7 @@ import jakarta.servlet.http.HttpSession;
 import vn.iostar.model.Category;
 import vn.iostar.model.Product;
 import vn.iostar.model.UserDtls;
+import vn.iostar.service.CartService;
 import vn.iostar.service.CategoryService;
 import vn.iostar.service.ProductService;
 import vn.iostar.service.UserService;
@@ -44,12 +45,17 @@ public class AdminController {
 	@Autowired
 	private UserService userService;
 	
+	@Autowired
+	private CartService cartService;
+	
 	@ModelAttribute
 	public void getUserDetails(Principal p, Model m) {
 		if (p != null) {
 			String email = p.getName();
 			UserDtls userDtls = userService.getUserByEmail(email);
 			m.addAttribute("user", userDtls);
+			Integer countCart = cartService.getCountCart(userDtls.getId());
+			m.addAttribute("countCart", countCart);
 		}
 		
 		List<Category> allActiveCategory = categoryService.getAllActiveCategory();
