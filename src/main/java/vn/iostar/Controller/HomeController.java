@@ -83,7 +83,6 @@ public class HomeController {
 	
 	@GetMapping("/products")
 	public String products(Model m, @RequestParam(value = "category", defaultValue = "") String category) {
-		
 		List<Category> categories = categoryService.getAllActiveCategory();
 		List<Product> products = productService.getAllActiveProducts(category);
 		m.addAttribute("categories", categories);
@@ -172,6 +171,7 @@ public class HomeController {
 	@PostMapping("/reset-password")
 	public String resetPassword(@RequestParam String token, @RequestParam String password, HttpSession session,
 			Model m) {
+		
 		UserDtls userByToken = userService.getUserByToken(token);
 		if (userByToken == null) {
 			m.addAttribute("errorMsg", "Your link is invalid or expired !!");
@@ -182,6 +182,7 @@ public class HomeController {
 			userService.updateUser(userByToken);
 			//session.setAttribute("succMsg", "Password change successfully");
 			m.addAttribute("msg","Password change successfully");
+			
 			return "message";
 		}
 	}
