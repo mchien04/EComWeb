@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,10 @@ import jakarta.servlet.http.HttpSession;
 
 import vn.iostar.model.Category;
 import vn.iostar.model.Product;
+import vn.iostar.model.UserDtls;
 import vn.iostar.service.CategoryService;
 import vn.iostar.service.ProductService;
+import vn.iostar.service.UserService;
 
 @Controller
 @RequestMapping("/admin")
@@ -37,6 +40,21 @@ public class AdminController {
 
 	@Autowired
 	private ProductService productService;
+	
+	@Autowired
+	private UserService userService;
+	
+	@ModelAttribute
+	public void getUserDetails(Principal p, Model m) {
+		if (p != null) {
+			String email = p.getName();
+			UserDtls userDtls = userService.getUserByEmail(email);
+			m.addAttribute("user", userDtls);
+		}
+		
+		List<Category> allActiveCategory = categoryService.getAllActiveCategory();
+		m.addAttribute("categorys", allActiveCategory);
+	}
 	
 	@GetMapping("/")
 	public String index() {
