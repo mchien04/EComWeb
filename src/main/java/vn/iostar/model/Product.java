@@ -16,6 +16,7 @@ import lombok.Setter;
 @Setter
 @Entity
 public class Product {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
@@ -33,4 +34,11 @@ public class Product {
 	private int stock;
 
 	private String image;
+
+	private int discount;
+
+	private Double discountPrice;
+	
+	private Boolean isActive;
+	
 }
