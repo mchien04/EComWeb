@@ -2,6 +2,8 @@ package vn.iostar.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+
 import vn.iostar.model.Category;
 
 public interface CategoryService {
@@ -17,5 +19,7 @@ public interface CategoryService {
 	public Category getCategoryById(int id);
 	
 	public List<Category> getAllActiveCategory();
+	
+	public Page<Category> getAllCategorPagination(Integer pageNo,Integer pageSize);
 	
 }
