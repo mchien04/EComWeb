@@ -54,11 +54,12 @@ public class AdminController {
 	@Autowired
 	private CartService cartService;
 
-	@Autowired
+
 	private OrderService orderService;
 
 	@Autowired
 	private CommonUtil commonUtil;
+
 
 	@ModelAttribute
 	public void getUserDetails(Principal p, Model m) {
@@ -66,6 +67,7 @@ public class AdminController {
 			String email = p.getName();
 			UserDtls userDtls = userService.getUserByEmail(email);
 			m.addAttribute("user", userDtls);
+
 			Integer countCart = cartService.getCountCart(userDtls.getId());
 			m.addAttribute("countCart", countCart);
 		}
