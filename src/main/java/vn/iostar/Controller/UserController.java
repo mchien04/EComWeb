@@ -149,7 +149,7 @@ public class UserController {
 		if (updateOrder) {
 			session.setAttribute("succMsg", "Status Updated");
 		} else {
-			session.setAttribute("errorMsg", "status not updated");
+			session.setAttribute("errorMsg", "Status not updated");
 		}
 		return "redirect:/user/user-orders";
 	}
