@@ -1,6 +1,7 @@
 package vn.iostar.util;
 
 import java.io.UnsupportedEncodingException;
+import java.security.Principal;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -11,12 +12,17 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import vn.iostar.model.ProductOrder;
+import vn.iostar.model.UserDtls;
+import vn.iostar.service.UserService;
 
 @Component
 public class CommonUtil {
 	
 	@Autowired
 	private JavaMailSender mailSender;
+	
+	@Autowired
+	private UserService userService;
 	
 	public Boolean sendMail(String url, String reciepentEmail) throws UnsupportedEncodingException, MessagingException {
 		
@@ -75,6 +81,12 @@ public class CommonUtil {
 		helper.setText(msg, true);
 		mailSender.send(message);
 		return true;
+	}
+	
+	public UserDtls getLoggedInUserDetails(Principal p) {
+		String email = p.getName();
+		UserDtls userDtls = userService.getUserByEmail(email);
+		return userDtls;
 	}
 	
 }
