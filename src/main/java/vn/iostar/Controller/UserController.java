@@ -17,11 +17,13 @@ import jakarta.servlet.http.HttpSession;
 import vn.iostar.model.Cart;
 import vn.iostar.model.Category;
 import vn.iostar.model.OrderRequest;
+import vn.iostar.model.ProductOrder;
 import vn.iostar.model.UserDtls;
 import vn.iostar.service.CartService;
 import vn.iostar.service.CategoryService;
 import vn.iostar.service.OrderService;
 import vn.iostar.service.UserService;
+import vn.iostar.util.OrderStatus;
 
 @Controller
 @RequestMapping("/user")
@@ -121,6 +123,31 @@ public class UserController {
 	@GetMapping("/success")
 	public String loadSuccess() {
 		return "/user/success";
+	}
+	
+	@GetMapping("/user-orders")
+	public String myOrder(Model m, Principal p) {
+		UserDtls loginUser = getLoggedInUserDetails(p);
+		List<ProductOrder> orders = orderService.getOrdersByUser(loginUser.getId());
+		m.addAttribute("orders", orders);
+		return "/user/my_orders";
+	}
+	@GetMapping("/update-status")
+	public String updateOrderStatus(@RequestParam Integer id, @RequestParam Integer st, HttpSession session) {
+		OrderStatus[] values = OrderStatus.values();
+		String status = null;
+		for (OrderStatus orderSt : values) {
+			if (orderSt.getId().equals(st)) {
+				status = orderSt.getName();
+			}
+		}
+		Boolean updateOrder = orderService.updateOrderStatus(id, status);
+		if (updateOrder) {
+			session.setAttribute("succMsg", "Status Updated");
+		} else {
+			session.setAttribute("errorMsg", "status not updated");
+		}
+		return "redirect:/user/user-orders";
 	}
 	
 }
