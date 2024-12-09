@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-		th:replace="~{base::layout(~{::section})}">
+	th:replace="~{base::layout(~{::section})}">
 <head>
-<meta charset="UTF-8">
+<meta charset="ISO-8859-1">
 <title>Insert title here</title>
 </head>
 <body>
@@ -10,7 +10,7 @@
 		<div class="container-fluid bg-primary p-5 mt-5 ">
 			<div class="row">
 				<div class="col-md-8 offset-md-2">
-					<form>
+					<form action="search" method="get">
 						<div class="input-group">
 							<input type="text" class="form-control" name="ch">
 							<button class="btn btn-light text-dark ms-3 col-md-2">
@@ -49,7 +49,7 @@
 						<div class="card-body">
 							<p class="fs-3 text-center">Products</p>
 							<div class="row">
-							
+
 								<th:block th:if="${products.size >0}">
 									<div class="col-md-3" th:each="p:${products}">
 										<div class="card">
@@ -59,8 +59,8 @@
 												<p class="fs-5 text-center">[[${p.title}]]</p>
 												<div class="row text-center">
 													<p class="fs-6 fw-bold ">
-														<span>&#8363; [[${p.discountPrice}]]</span> <br> <span
-															class="text-decoration-line-through text-secondary">&#8363;
+														<span>&#8377; [[${p.discountPrice}]]</span> <br> <span
+															class="text-decoration-line-through text-secondary">&#8377;
 															[[${p.price}]]</span> <span class="fs-6 text-success">[[${p.discount}]]%
 															off </span>
 													</p>
@@ -70,16 +70,16 @@
 												</div>
 											</div>
 										</div>
-								</div>
+									</div>
 								</th:block>
 								<th:block th:unless="${products.size>0}">
 								<p class="fs-4 text-center mt-4 text-danger">Product not available</p>
 								</th:block>
 							</div>
-							
+
 						</div>
 					</div>
-					
+
 				</div>
 			</div>
 		</div>

@@ -1,4 +1,5 @@
-package vn.iostar.Controller;
+
+package vn.iotstar.controller;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,40 +23,56 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.servlet.http.HttpSession;
+import vn.iotstar.model.Category;
+import vn.iotstar.model.Product;
+import vn.iotstar.model.ProductOrder;
+import vn.iotstar.model.UserDtls;
+import vn.iotstar.service.CartService;
+import vn.iotstar.service.CategoryService;
+import vn.iotstar.service.OrderService;
+import vn.iotstar.service.ProductService;
+import vn.iotstar.service.UserService;
+import vn.iotstar.util.CommonUtil;
+import vn.iotstar.util.OrderStatus;
 
-import vn.iostar.model.Category;
-import vn.iostar.model.Product;
-import vn.iostar.model.UserDtls;
-import vn.iostar.service.CategoryService;
-import vn.iostar.service.ProductService;
-import vn.iostar.service.UserService;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-	
+
 	@Autowired
 	private CategoryService categoryService;
 
 	@Autowired
 	private ProductService productService;
-	
+
 	@Autowired
 	private UserService userService;
-	
+
+	@Autowired
+	private CartService cartService;
+
+	@Autowired
+	private OrderService orderService;
+
+	@Autowired
+	private CommonUtil commonUtil;
+
 	@ModelAttribute
 	public void getUserDetails(Principal p, Model m) {
 		if (p != null) {
 			String email = p.getName();
 			UserDtls userDtls = userService.getUserByEmail(email);
 			m.addAttribute("user", userDtls);
+			Integer countCart = cartService.getCountCart(userDtls.getId());
+			m.addAttribute("countCart", countCart);
 		}
-		
+
 		List<Category> allActiveCategory = categoryService.getAllActiveCategory();
 		m.addAttribute("categorys", allActiveCategory);
 	}
-	
+
 	@GetMapping("/")
 	public String index() {
 		return "admin/index";
@@ -73,9 +90,9 @@ public class AdminController {
 		m.addAttribute("categorys", categoryService.getAllCategory());
 		return "admin/category";
 	}
-	
+
 	@PostMapping("/saveCategory")
-	public String saveCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file, 
+	public String saveCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file,
 			HttpSession session) throws IOException {
 
 		String imageName = file != null ? file.getOriginalFilename() : "default.jpg";
@@ -181,7 +198,7 @@ public class AdminController {
 			Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "product_img" + File.separator
 					+ image.getOriginalFilename());
 
-			//System.out.println(path);
+			// System.out.println(path);
 			Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 
 			session.setAttribute("succMsg", "Product Saved Success");
@@ -230,7 +247,6 @@ public class AdminController {
 				session.setAttribute("errorMsg", "Something wrong on server");
 			}
 		}
-
 		return "redirect:/admin/editProduct/" + product.getId();
 	}
 
@@ -240,6 +256,7 @@ public class AdminController {
 		m.addAttribute("users", users);
 		return "/admin/users";
 	}
+
 	@GetMapping("/updateSts")
 	public String updateUserAccountStatus(@RequestParam Boolean status, @RequestParam Integer id, HttpSession session) {
 		Boolean f = userService.updateAccountStatus(id, status);
@@ -249,6 +266,66 @@ public class AdminController {
 			session.setAttribute("errorMsg", "Something wrong on server");
 		}
 		return "redirect:/admin/users";
+	}
+
+	@GetMapping("/orders")
+	public String getAllOrders(Model m) {
+		List<ProductOrder> allOrders = orderService.getAllOrders();
+		m.addAttribute("orders", allOrders);
+		m.addAttribute("srch", false);
+		return "/admin/orders";
+	}
+
+	@PostMapping("/update-order-status")
+	public String updateOrderStatus(@RequestParam Integer id, @RequestParam Integer st, HttpSession session) {
+
+		OrderStatus[] values = OrderStatus.values();
+		String status = null;
+
+		for (OrderStatus orderSt : values) {
+			if (orderSt.getId().equals(st)) {
+				status = orderSt.getName();
+			}
+		}
+
+		ProductOrder updateOrder = orderService.updateOrderStatus(id, status);
+
+		try {
+			commonUtil.sendMailForProductOrder(updateOrder, status);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		if (!ObjectUtils.isEmpty(updateOrder)) {
+			session.setAttribute("succMsg", "Status Updated");
+		} else {
+			session.setAttribute("errorMsg", "status not updated");
+		}
+		return "redirect:/admin/orders";
+	}
+
+	@GetMapping("/search-order")
+	public String searchProduct(@RequestParam String orderId, Model m, HttpSession session) {
+
+		if (orderId != null && orderId.length() > 0) {
+
+			ProductOrder order = orderService.getOrdersByOrderId(orderId.trim());
+
+			if (ObjectUtils.isEmpty(order)) {
+				session.setAttribute("errorMsg", "Incorrect orderId");
+				m.addAttribute("orderDtls", null);
+			} else {
+				m.addAttribute("orderDtls", order);
+			}
+
+			m.addAttribute("srch", true);
+		} else {
+			List<ProductOrder> allOrders = orderService.getAllOrders();
+			m.addAttribute("orders", allOrders);
+			m.addAttribute("srch", false);
+		}
+		return "/admin/orders";
+
 	}
 
 }

@@ -1,4 +1,4 @@
-package vn.iostar.service.impl;
+package vn.iotstar.service.impl;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -13,9 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import vn.iostar.model.Product;
-import vn.iostar.repository.ProductRepository;
-import vn.iostar.service.ProductService;
+import vn.iotstar.model.Product;
+import vn.iotstar.repository.ProductRepository;
+import vn.iotstar.service.ProductService;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -65,12 +65,12 @@ public class ProductServiceImpl implements ProductService {
 		dbProduct.setImage(imageName);
 		dbProduct.setIsActive(product.getIsActive());
 		dbProduct.setDiscount(product.getDiscount());
-		
+
 		// 5=100*(5/100); 100-5=95
 		Double disocunt = product.getPrice() * (product.getDiscount() / 100.0);
 		Double discountPrice = product.getPrice() - disocunt;
 		dbProduct.setDiscountPrice(discountPrice);
-		
+
 		Product updateProduct = productRepository.save(dbProduct);
 
 		if (!ObjectUtils.isEmpty(updateProduct)) {
@@ -98,11 +98,16 @@ public class ProductServiceImpl implements ProductService {
 		List<Product> products = null;
 		if (ObjectUtils.isEmpty(category)) {
 			products = productRepository.findByIsActiveTrue();
-		}else {
-			products=productRepository.findByCategory(category);
+		} else {
+			products = productRepository.findByCategory(category);
 		}
 
 		return products;
 	}
-	
+
+	@Override
+	public List<Product> searchProduct(String ch) {
+		return productRepository.findByTitleContainingIgnoreCaseOrCategoryContainingIgnoreCase(ch, ch);
+	}
+
 }
