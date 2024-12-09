@@ -50,7 +50,6 @@ public class UserController {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
-
 	@GetMapping("/")
 	public String home() {
 		return "user/home";
@@ -156,7 +155,7 @@ public class UserController {
 		}
 
 		ProductOrder updateOrder = orderService.updateOrderStatus(id, status);
-		
+
 		try {
 			commonUtil.sendMailForProductOrder(updateOrder, status);
 		} catch (Exception e) {
@@ -211,3 +210,4 @@ public class UserController {
 	}
 
 }
+

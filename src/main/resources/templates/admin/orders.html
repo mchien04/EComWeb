@@ -2,7 +2,9 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
 	th:replace="~{base::layout(~{::section})}">
 <head>
-<meta charset="ISO-8859-1">
+
+<meta charset="UTF-8">
+
 <title>Insert title here</title>
 </head>
 <body>
@@ -11,8 +13,10 @@
 			<div class="row">
 				<p class="text-center fs-3 mt-2">All Orders</p>
 				<hr>
+
 				<a href="/admin/" class="text-decoration-none"><i
 					class="fa-solid fa-arrow-left"></i> Back</a>
+
 				<th:block th:if="${session.succMsg}">
 					<p class="text-success fw-bold text-center">[[${session.succMsg}]]</p>
 					<th:block th:text="${@commnServiceImpl.removeSessionMessage()}"></th:block>
@@ -24,10 +28,12 @@
 				</th:block>
 				<div class="col-md-4 p-4">
 
+
 					<form action="/admin/search-order" method="get">
 						<div class="row">
 							<div class="col">
 								<input type="text" class="form-control " name="orderId"
+
 									placeholder="Enter order id">
 							</div>
 							<div class="col">
@@ -40,7 +46,9 @@
 				<div class="col-md-12 ps-4 pe-4">
 
 					<table class="table table-bordered card-sh">
+
 						<thead class="table-light">
+
 							<tr>
 								<th scope="col">Order Id</th>
 								<th scope="col">Deliver Details</th>
@@ -52,6 +60,7 @@
 							</tr>
 						</thead>
 						<tbody>
+
 							<th:block th:if="${srch}">
 								<th:block th:if="${orderDtls!=null}">
 									<tr>
@@ -203,6 +212,7 @@
 
 						</div>
 					</th:block>
+
 
 				</div>
 			</div>

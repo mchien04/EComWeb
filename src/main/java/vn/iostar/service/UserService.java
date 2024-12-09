@@ -37,3 +37,4 @@ public interface UserService {
 	public Boolean existsEmail(String email);
 
 }
+
