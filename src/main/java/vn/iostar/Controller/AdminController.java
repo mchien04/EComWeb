@@ -27,6 +27,7 @@ import jakarta.servlet.http.HttpSession;
 import vn.iostar.model.Category;
 import vn.iostar.model.Product;
 import vn.iostar.model.UserDtls;
+import vn.iostar.service.CartService;
 import vn.iostar.service.CategoryService;
 import vn.iostar.service.ProductService;
 import vn.iostar.service.UserService;
@@ -34,28 +35,34 @@ import vn.iostar.service.UserService;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-	
+
 	@Autowired
 	private CategoryService categoryService;
 
 	@Autowired
 	private ProductService productService;
-	
+
 	@Autowired
 	private UserService userService;
-	
+
+	@Autowired
+	private CartService cartService;
+
 	@ModelAttribute
 	public void getUserDetails(Principal p, Model m) {
 		if (p != null) {
 			String email = p.getName();
 			UserDtls userDtls = userService.getUserByEmail(email);
 			m.addAttribute("user", userDtls);
+			// Thêm phần đếm số lượng sản phẩm trong giỏ hàng
+			Integer countCart = cartService.getCountCart(userDtls.getId());
+			m.addAttribute("countCart", countCart);
 		}
-		
+
 		List<Category> allActiveCategory = categoryService.getAllActiveCategory();
 		m.addAttribute("categorys", allActiveCategory);
 	}
-	
+
 	@GetMapping("/")
 	public String index() {
 		return "admin/index";
@@ -73,9 +80,9 @@ public class AdminController {
 		m.addAttribute("categorys", categoryService.getAllCategory());
 		return "admin/category";
 	}
-	
+
 	@PostMapping("/saveCategory")
-	public String saveCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file, 
+	public String saveCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file,
 			HttpSession session) throws IOException {
 
 		String imageName = file != null ? file.getOriginalFilename() : "default.jpg";
@@ -181,7 +188,7 @@ public class AdminController {
 			Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "product_img" + File.separator
 					+ image.getOriginalFilename());
 
-			//System.out.println(path);
+			// System.out.println(path);
 			Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 
 			session.setAttribute("succMsg", "Product Saved Success");
@@ -240,6 +247,7 @@ public class AdminController {
 		m.addAttribute("users", users);
 		return "/admin/users";
 	}
+
 	@GetMapping("/updateSts")
 	public String updateUserAccountStatus(@RequestParam Boolean status, @RequestParam Integer id, HttpSession session) {
 		Boolean f = userService.updateAccountStatus(id, status);
