@@ -2,8 +2,10 @@ package vn.iostar.service;
 
 import java.util.List;
 
-import vn.iotstar.model.OrderRequest;
-import vn.iotstar.model.ProductOrder;
+import org.springframework.data.domain.Page;
+
+import vn.iostar.model.OrderRequest;
+import vn.iostar.model.ProductOrder;
 
 public interface OrderService {
 
@@ -16,4 +18,6 @@ public interface OrderService {
 	public List<ProductOrder> getAllOrders();
 
 	public ProductOrder getOrdersByOrderId(String orderId);
+	
+	public Page<ProductOrder> getAllOrdersPagination(Integer pageNo,Integer pageSize);
 }
