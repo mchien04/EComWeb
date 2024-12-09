@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.servlet.http.HttpSession;
 import vn.iostar.model.Cart;
 import vn.iostar.model.Category;
 import vn.iostar.model.OrderRequest;
 import vn.iostar.model.ProductOrder;
 import vn.iostar.model.UserDtls;
+import vn.iostar.repository.UserRepository;
 import vn.iostar.service.CartService;
 import vn.iostar.service.CategoryService;
 import vn.iostar.service.OrderService;
@@ -28,12 +28,13 @@ import vn.iostar.service.UserService;
 import vn.iostar.util.CommonUtil;
 import vn.iostar.util.OrderStatus;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 @RequestMapping("/user")
 public class UserController {
 	@Autowired
 	private UserService userService;
-
 	@Autowired
 	private CategoryService categoryService;
 
@@ -45,7 +46,7 @@ public class UserController {
 
 	@Autowired
 	private CommonUtil commonUtil;
-	
+
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
@@ -60,10 +61,10 @@ public class UserController {
 			String email = p.getName();
 			UserDtls userDtls = userService.getUserByEmail(email);
 			m.addAttribute("user", userDtls);
-			// Thêm phần đếm số lượng sản phẩm trong giỏ hàng
 			Integer countCart = cartService.getCountCart(userDtls.getId());
 			m.addAttribute("countCart", countCart);
 		}
+
 		List<Category> allActiveCategory = categoryService.getAllActiveCategory();
 		m.addAttribute("categorys", allActiveCategory);
 	}
@@ -209,3 +210,4 @@ public class UserController {
 	}
 
 }
+

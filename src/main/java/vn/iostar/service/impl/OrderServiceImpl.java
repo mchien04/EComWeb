@@ -1,3 +1,4 @@
+
 package vn.iostar.service.impl;
 
 import java.time.LocalDate;
@@ -7,6 +8,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import vn.iostar.model.Cart;
@@ -28,6 +32,9 @@ public class OrderServiceImpl implements OrderService {
 	@Autowired
 	private CartRepository cartRepository;
 	
+	@Autowired
+	private CommonUtil commonUtil;
+
 	@Autowired
 	private CommonUtil commonUtil;
 
@@ -81,11 +88,27 @@ public class OrderServiceImpl implements OrderService {
 		if (findById.isPresent()) {
 			ProductOrder productOrder = findById.get();
 			productOrder.setStatus(status);
-			orderRepository.save(productOrder);
 			ProductOrder updateOrder = orderRepository.save(productOrder);
 			return updateOrder;
 		}
 		return null;
+	}
+
+	@Override
+	public List<ProductOrder> getAllOrders() {
+		return orderRepository.findAll();
+	}
+
+	@Override
+	public Page<ProductOrder> getAllOrdersPagination(Integer pageNo, Integer pageSize) {
+		Pageable pageable = PageRequest.of(pageNo, pageSize);
+		return orderRepository.findAll(pageable);
+
+	}
+
+	@Override
+	public ProductOrder getOrdersByOrderId(String orderId) {
+		return orderRepository.findByOrderId(orderId);
 	}
 	
 	@Override
