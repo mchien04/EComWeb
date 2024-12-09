@@ -2,6 +2,8 @@ Nhánh main là final project
 
 Nhánh master để hiện lịch sử commit của từng thành viên
 
+------------------------------------------------------------------------------
+
 Dự án chạy ở port 8082
 
 Kết nối với database MySQL
