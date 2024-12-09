@@ -1,7 +1,7 @@
 $(function(){
 // User Register validation
-	var $userRegister=$("#userRegister");
-	$userRegister.validate({
+var $userRegister=$("#userRegister");
+$userRegister.validate({
 		
 		rules:{
 			name:{
@@ -35,8 +35,7 @@ $(function(){
 				all: true
 			},
 			city: {
-				required: true,
-				space: true
+				required: true
 			},
 			state: {
 				required: true,
@@ -45,9 +44,9 @@ $(function(){
 				required: true,
 				space: true,
 				numericOnly: true
-			}, img: {
+			}/*, img: {
 				required: true,
-			}
+			}*/
 			
 		},
 		messages:{
@@ -130,8 +129,7 @@ $orders.validate({
 				all: true
 			},
 			city: {
-				required: true,
-				space: true
+				required: true
 			},
 			state: {
 				required: true,
@@ -221,16 +219,19 @@ $resetPassword.validate({
 	
 	
 })
-	jQuery.validator.addMethod('lettersonly', function(value, element) {
-		return /^[^-\s][a-zA-Z_\s-]+$/.test(value);
-	});
-	
-	jQuery.validator.addMethod('space', function(value, element) {
-		return /^[^-\s]+$/.test(value);
-	});
-	jQuery.validator.addMethod('all', function(value, element) {
-		return /^[^-\s][a-zA-Z0-9_,.\s-]+$/.test(value);
-	});
-	jQuery.validator.addMethod('numericOnly', function(value, element) {
-		return /^[0-9]+$/.test(value);
-	});
+jQuery.validator.addMethod('lettersonly', function(value, element) {
+    return /^[a-zA-ZAÁÀẢÃẠĂẮẰẲẴẶÂẤẦẨẪẬEÉÈẺẼẸÊẾỀỂỄỆIÍÌỈĨỊOÓÒỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢUÚÙỦŨỤƯỨỪỬỮỰYÝỲỶỸỴaáàảãạăắằẳẵặâấầẩẫậeéèẻẽẹêếềểễệiíìỉĩịoóòỏõọôốồổỗộơớờởỡợuúùủũụưứừửữựyýỳỷỹỵ\s]+$/.test(value);
+});
+
+jQuery.validator.addMethod('space', function(value, element) {
+    return /^[^\s]+$/.test(value);
+});
+
+jQuery.validator.addMethod('all', function(value, element) {
+    return /^[a-zA-ZAÁÀẢÃẠĂẮẰẲẴẶÂẤẦẨẪẬEÉÈẺẼẸÊẾỀỂỄỆIÍÌỈĨỊOÓÒỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢUÚÙỦŨỤƯỨỪỬỮỰYÝỲỶỸỴaáàảãạăắằẳẵặâấầẩẫậeéèẻẽẹêếềểễệiíìỉĩịoóòỏõọôốồổỗộơớờởỡợuúùủũụưứừửữựyýỳỷỹỵ0-9\s,.-]+$/.test(value);
+});
+
+jQuery.validator.addMethod('numericOnly', function(value, element) {
+    return /^[0-9]+$/.test(value);
+});
+

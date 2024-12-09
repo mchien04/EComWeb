@@ -30,8 +30,10 @@ public interface UserService {
 	
 	public UserDtls updateUser(UserDtls user);
 	
-	public UserDtls updateUserProfile(UserDtls user,MultipartFile img);
+	public UserDtls updateUserProfile(UserDtls user, MultipartFile img);
 	
 	public UserDtls saveAdmin(UserDtls user);
+	
+	public Boolean existsEmail(String email);
 	
 }
