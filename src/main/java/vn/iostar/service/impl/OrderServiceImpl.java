@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import vn.iotstar.model.Cart;
 import vn.iotstar.model.OrderAddress;
 import vn.iotstar.model.OrderRequest;
@@ -19,6 +20,16 @@ import vn.iotstar.service.OrderService;
 import vn.iotstar.util.CommonUtil;
 import vn.iotstar.util.OrderStatus;
 
+import vn.iostar.model.Cart;
+import vn.iostar.model.OrderAddress;
+import vn.iostar.model.OrderRequest;
+import vn.iostar.model.ProductOrder;
+import vn.iostar.repository.CartRepository;
+import vn.iostar.repository.ProductOrderRepository;
+import vn.iostar.service.OrderService;
+import vn.iostar.util.OrderStatus;
+
+
 @Service
 public class OrderServiceImpl implements OrderService {
 
@@ -28,11 +39,16 @@ public class OrderServiceImpl implements OrderService {
 	@Autowired
 	private CartRepository cartRepository;
 
+
 	@Autowired
 	private CommonUtil commonUtil;
 
 	@Override
 	public void saveOrder(Integer userid, OrderRequest orderRequest) throws Exception {
+
+	@Override
+	public void saveOrder(Integer userid, OrderRequest orderRequest) {
+
 
 		List<Cart> carts = cartRepository.findByUserId(userid);
 
@@ -64,8 +80,13 @@ public class OrderServiceImpl implements OrderService {
 
 			order.setOrderAddress(address);
 
+
 			ProductOrder saveOrder = orderRepository.save(order);
 			commonUtil.sendMailForProductOrder(saveOrder, "success");
+
+			orderRepository.save(order);
+
+
 		}
 	}
 
@@ -76,11 +97,16 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
+
 	public ProductOrder updateOrderStatus(Integer id, String status) {
+
+	public Boolean updateOrderStatus(Integer id, String status) {
+
 		Optional<ProductOrder> findById = orderRepository.findById(id);
 		if (findById.isPresent()) {
 			ProductOrder productOrder = findById.get();
 			productOrder.setStatus(status);
+
 			ProductOrder updateOrder = orderRepository.save(productOrder);
 			return updateOrder;
 		}
@@ -98,3 +124,12 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 }
+
+			orderRepository.save(productOrder);
+			return true;
+		}
+		return false;
+	}
+
+}
+

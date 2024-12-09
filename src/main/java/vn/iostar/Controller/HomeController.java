@@ -66,6 +66,7 @@ public class HomeController {
 			String email = p.getName();
 			UserDtls userDtls = userService.getUserByEmail(email);
 			m.addAttribute("user", userDtls);
+
 			Integer countCart = cartService.getCountCart(userDtls.getId());
 			m.addAttribute("countCart", countCart);
 		}
@@ -138,7 +139,6 @@ public class HomeController {
 				Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "profile_img" + File.separator
 						+ file.getOriginalFilename());
 
-//				System.out.println(path);
 				Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 			}
 			session.setAttribute("succMsg", "Register successfully");
@@ -167,6 +167,7 @@ public class HomeController {
 		} else {
 
 			String resetToken = UUID.randomUUID().toString();
+
 			userService.updateUserResetToken(email, resetToken);
 
 			// Generate URL :
@@ -219,6 +220,7 @@ public class HomeController {
 
 	}
 
+
 	@GetMapping("/search")
 	public String searchProduct(@RequestParam String ch, Model m) {
 		List<Product> searchProducts = productService.searchProduct(ch);
@@ -230,3 +232,6 @@ public class HomeController {
 	}
 
 }
+
+}
+
