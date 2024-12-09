@@ -1,4 +1,4 @@
-package vn.iotstar.Controller;
+package vn.iostar.Controller;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,17 +22,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import vn.iotstar.model.Category;
-import vn.iotstar.model.Product;
-import vn.iotstar.model.ProductOrder;
-import vn.iotstar.model.UserDtls;
-import vn.iotstar.service.CartService;
-import vn.iotstar.service.CategoryService;
-import vn.iotstar.service.OrderService;
-import vn.iotstar.service.ProductService;
-import vn.iotstar.service.UserService;
-import vn.iotstar.util.CommonUtil;
-import vn.iotstar.util.OrderStatus;
+import vn.iostar.model.Category;
+import vn.iostar.model.Product;
+import vn.iostar.model.ProductOrder;
+import vn.iostar.model.UserDtls;
+import vn.iostar.service.CartService;
+import vn.iostar.service.CategoryService;
+import vn.iostar.service.OrderService;
+import vn.iostar.service.ProductService;
+import vn.iostar.service.UserService;
+import vn.iostar.util.CommonUtil;
+import vn.iostar.util.OrderStatus;
 
 import jakarta.servlet.http.HttpSession;
 

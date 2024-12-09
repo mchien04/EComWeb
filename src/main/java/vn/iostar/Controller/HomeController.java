@@ -1,4 +1,4 @@
-package vn.iotstar.Controller;
+package vn.iostar.Controller;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,6 +14,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,14 +26,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import vn.iotstar.model.Category;
-import vn.iotstar.model.Product;
-import vn.iotstar.model.UserDtls;
-import vn.iotstar.service.CartService;
-import vn.iotstar.service.CategoryService;
-import vn.iotstar.service.ProductService;
-import vn.iotstar.service.UserService;
-import vn.iotstar.util.CommonUtil;
+import vn.iostar.model.Category;
+import vn.iostar.model.Product;
+import vn.iostar.model.UserDtls;
+import vn.iostar.service.CartService;
+import vn.iostar.service.CategoryService;
+import vn.iostar.service.ProductService;
+import vn.iostar.service.UserService;
+import vn.iostar.util.CommonUtil;
 
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -89,13 +90,29 @@ public class HomeController {
 	}
 
 	@GetMapping("/products")
-	public String products(Model m, @RequestParam(value = "category", defaultValue = "") String category) {
-		// System.out.println("category="+category);
+	public String products(Model m, @RequestParam(value = "category", defaultValue = "") String category,
+			@RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
+			@RequestParam(name = "pageSize", defaultValue = "9") Integer pageSize) {
+
 		List<Category> categories = categoryService.getAllActiveCategory();
-		List<Product> products = productService.getAllActiveProducts(category);
-		m.addAttribute("categories", categories);
-		m.addAttribute("products", products);
 		m.addAttribute("paramValue", category);
+		m.addAttribute("categories", categories);
+
+//		List<Product> products = productService.getAllActiveProducts(category);
+//		m.addAttribute("products", products);
+
+		Page<Product> page = productService.getAllActiveProductPagination(pageNo, pageSize, category);
+		List<Product> products = page.getContent();
+		m.addAttribute("products", products);
+		m.addAttribute("productsSize", products.size());
+
+		m.addAttribute("pageNo", page.getNumber());
+		m.addAttribute("pageSize", pageSize);
+		m.addAttribute("totalElements", page.getTotalElements());
+		m.addAttribute("totalPages", page.getTotalPages());
+		m.addAttribute("isFirst", page.isFirst());
+		m.addAttribute("isLast", page.isLast());
+
 		return "product";
 	}
 
