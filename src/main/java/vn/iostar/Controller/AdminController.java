@@ -1,5 +1,4 @@
-
-package vn.iotstar.controller;
+package vn.iotstar.Controller;
 
 import java.io.File;
 import java.io.IOException;
