@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.servlet.http.HttpSession;
 import vn.iostar.model.Cart;
@@ -40,7 +41,7 @@ public class UserController {
 
 	@Autowired
 	private OrderService orderService;
-	
+
 	@Autowired
 	private CommonUtil commonUtil;
 
@@ -149,7 +150,7 @@ public class UserController {
 		}
 
 		ProductOrder updateOrder = orderService.updateOrderStatus(id, status);
-		
+
 		try {
 			commonUtil.sendMailForProductOrder(updateOrder, status);
 		} catch (Exception e) {
@@ -164,4 +165,21 @@ public class UserController {
 		return "redirect:/user/user-orders";
 	}
 
+	@GetMapping("/profile")
+	public String profile() {
+		return "/user/profile";
+	}
+
+	@PostMapping("/update-profile")
+	public String updateProfile(@ModelAttribute UserDtls user, @RequestParam MultipartFile img, HttpSession session) {
+		UserDtls updateUserProfile = userService.updateUserProfile(user, img);
+		if (ObjectUtils.isEmpty(updateUserProfile)) {
+			session.setAttribute("errorMsg", "Profile not updated");
+		} else {
+			session.setAttribute("succMsg", "Profile Updated");
+		}
+		return "redirect:/user/profile";
+	}
+
+	
 }
