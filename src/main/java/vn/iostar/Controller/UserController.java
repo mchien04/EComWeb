@@ -25,21 +25,16 @@ import vn.iostar.service.CartService;
 import vn.iostar.service.CategoryService;
 import vn.iostar.service.OrderService;
 import vn.iostar.service.UserService;
-
 import vn.iostar.util.CommonUtil;
 import vn.iostar.util.OrderStatus;
 
 import jakarta.servlet.http.HttpSession;
-
-import vn.iostar.util.OrderStatus;
-
 
 @Controller
 @RequestMapping("/user")
 public class UserController {
 	@Autowired
 	private UserService userService;
-
 	@Autowired
 	private CategoryService categoryService;
 
@@ -49,13 +44,11 @@ public class UserController {
 	@Autowired
 	private OrderService orderService;
 
-
 	@Autowired
 	private CommonUtil commonUtil;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-
 
 
 	@GetMapping("/")
@@ -69,9 +62,6 @@ public class UserController {
 			String email = p.getName();
 			UserDtls userDtls = userService.getUserByEmail(email);
 			m.addAttribute("user", userDtls);
-
-			// Thêm phần đếm số lượng sản phẩm trong giỏ hàng
-
 			Integer countCart = cartService.getCountCart(userDtls.getId());
 			m.addAttribute("countCart", countCart);
 		}
@@ -132,11 +122,7 @@ public class UserController {
 	}
 
 	@PostMapping("/save-order")
-
 	public String saveOrder(@ModelAttribute OrderRequest request, Principal p) throws Exception {
-
-	public String saveOrder(@ModelAttribute OrderRequest request, Principal p) {
-
 		// System.out.println(request);
 		UserDtls user = getLoggedInUserDetails(p);
 		orderService.saveOrder(user.getId(), request);
@@ -225,15 +211,3 @@ public class UserController {
 	}
 
 }
-
-		Boolean updateOrder = orderService.updateOrderStatus(id, status);
-
-		if (updateOrder) {
-			session.setAttribute("succMsg", "Status Updated");
-		} else {
-			session.setAttribute("errorMsg", "Status not updated");
-		}
-		return "redirect:/user/user-orders";
-	}
-}
-
