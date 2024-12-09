@@ -112,8 +112,10 @@ public class UserController {
 		m.addAttribute("carts", carts);
 		if (carts.size() > 0) {
 			Double orderPrice = carts.get(carts.size() - 1).getTotalOrderPrice();
-			Double totalOrderPrice = carts.get(carts.size() - 1).getTotalOrderPrice() + 250 + 100;
+			Double tax = (orderPrice) * 0.1;
+			Double totalOrderPrice = carts.get(carts.size() - 1).getTotalOrderPrice() + 30000 + tax;
 			m.addAttribute("orderPrice", orderPrice);
+			m.addAttribute("tax", tax);
 			m.addAttribute("totalOrderPrice", totalOrderPrice);
 		}
 		return "/user/order";

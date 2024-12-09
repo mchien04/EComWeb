@@ -15,7 +15,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import vn.iostar.model.UserDtls;
 import vn.iostar.repository.UserRepository;
 import vn.iostar.service.UserService;
-import vn.iostar.service.impl.UserServiceImpl;
 import vn.iostar.util.AppConstant;
 
 @Component
