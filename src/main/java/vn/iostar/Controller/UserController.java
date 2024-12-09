@@ -23,6 +23,7 @@ import vn.iostar.service.CartService;
 import vn.iostar.service.CategoryService;
 import vn.iostar.service.OrderService;
 import vn.iostar.service.UserService;
+import vn.iostar.util.CommonUtil;
 import vn.iostar.util.OrderStatus;
 
 @Controller
@@ -39,8 +40,10 @@ public class UserController {
 	
 	@Autowired
 	private OrderService orderService;
-
 	
+	@Autowired
+	private CommonUtil commonUtil;
+
 	@GetMapping("/")
 	public String home() {
 		return "user/home";
@@ -112,7 +115,7 @@ public class UserController {
 	}
 	
 	@PostMapping("/save-order")
-	public String saveOrder(@ModelAttribute OrderRequest request, Principal p) {
+	public String saveOrder(@ModelAttribute OrderRequest request, Principal p) throws Exception {
 		// System.out.println(request);
 		UserDtls user = getLoggedInUserDetails(p);
 		orderService.saveOrder(user.getId(), request);
@@ -132,6 +135,7 @@ public class UserController {
 		m.addAttribute("orders", orders);
 		return "/user/my_orders";
 	}
+	
 	@GetMapping("/update-status")
 	public String updateOrderStatus(@RequestParam Integer id, @RequestParam Integer st, HttpSession session) {
 		OrderStatus[] values = OrderStatus.values();
@@ -141,8 +145,14 @@ public class UserController {
 				status = orderSt.getName();
 			}
 		}
-		Boolean updateOrder = orderService.updateOrderStatus(id, status);
-		if (updateOrder) {
+		ProductOrder updateOrder = orderService.updateOrderStatus(id, status);
+		
+		try {
+			commonUtil.sendMailForProductOrder(updateOrder, status);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if (!ObjectUtils.isEmpty(updateOrder)) {
 			session.setAttribute("succMsg", "Status Updated");
 		} else {
 			session.setAttribute("errorMsg", "status not updated");

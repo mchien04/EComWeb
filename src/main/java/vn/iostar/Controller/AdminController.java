@@ -33,6 +33,7 @@ import vn.iostar.service.CategoryService;
 import vn.iostar.service.OrderService;
 import vn.iostar.service.ProductService;
 import vn.iostar.service.UserService;
+import vn.iostar.util.CommonUtil;
 import vn.iostar.util.OrderStatus;
 
 @Controller
@@ -53,6 +54,9 @@ public class AdminController {
 	
 	@Autowired
 	private OrderService orderService;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	@ModelAttribute
 	public void getUserDetails(Principal p, Model m) {
@@ -252,6 +256,7 @@ public class AdminController {
 		m.addAttribute("users", users);
 		return "/admin/users";
 	}
+	
 	@GetMapping("/updateSts")
 	public String updateUserAccountStatus(@RequestParam Boolean status, @RequestParam Integer id, HttpSession session) {
 		Boolean f = userService.updateAccountStatus(id, status);
@@ -279,13 +284,22 @@ public class AdminController {
 				status = orderSt.getName();
 			}
 		}
-		Boolean updateOrder = orderService.updateOrderStatus(id, status);
-		if (updateOrder) {
+		ProductOrder updateOrder = orderService.updateOrderStatus(id, status);
+		
+		try {
+			commonUtil.sendMailForProductOrder(updateOrder, status);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		if (!ObjectUtils.isEmpty(updateOrder)) {
 			session.setAttribute("succMsg", "Status Updated");
 		} else {
 			session.setAttribute("errorMsg", "status not updated");
 		}
 		return "redirect:/admin/orders";
 	}
+	
+	
 
 }
